@@ -24,17 +24,15 @@ CREATE TABLE s284712.E_GAME_INSTANCE (
     );
 
 CREATE TABLE s284712.E_GAME_PARTICIPATION (
-    id SERIAL, 
     child_id SERIAL NOT NULL,
     game_instance_id SERIAL NOT NULL,
-    PRIMARY KEY (id,game_instance_id)
+    PRIMARY KEY (child_id,game_instance_id)
 );
 
 CREATE TABLE s284712.E_GAME_WATCHING (
-    id SERIAL, 
     adult_id SERIAL NOT NULL,
     game_instance_id SERIAL NOT NULL,
-    PRIMARY KEY (id,game_instance_id)
+    PRIMARY KEY (adult_id,game_instance_id)
 );
 
 
@@ -44,13 +42,5 @@ ALTER TABLE s284712.E_GAME_PARTICIPATION ADD FOREIGN KEY (game_instance_id) REFE
 ALTER TABLE s284712.E_GAME_PARTICIPATION ADD FOREIGN KEY (child_id) REFERENCES s284712.E_CHILD (id);
 ALTER TABLE s284712.E_GAME_WATCHING ADD FOREIGN KEY (game_instance_id) REFERENCES s284712.E_GAME_INSTANCE (id);
 ALTER TABLE s284712.E_GAME_WATCHING ADD FOREIGN KEY (adult_id) REFERENCES s284712.E_ADULT (id);
-
-
--- Ref: E_GAME_INSTANCE.name_of_the_game > E_GAME.name
--- Ref: E_GAME_INSTANCE.won_child_id > E_CHILD.id
--- Ref: E_GAME_PARTICIPATION.game_instance_id > E_GAME_INSTANCE.id
--- Ref: E_GAME_PARTICIPATION.child_id > E_CHILD.id
--- Ref: E_GAME_WATCHING.game_instance_id > E_GAME_INSTANCE.id
--- Ref: E_GAME_WATCHING.adult_id > E_ADULT.id
 
 
