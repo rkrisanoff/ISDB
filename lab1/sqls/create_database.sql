@@ -24,14 +24,14 @@ CREATE TABLE s284712.E_GAME_INSTANCE (
     );
 
 CREATE TABLE s284712.E_GAME_PARTICIPATION (
-    child_id SERIAL NOT NULL,
-    game_instance_id SERIAL NOT NULL,
+    child_id SERIAL,
+    game_instance_id SERIAL,
     PRIMARY KEY (child_id,game_instance_id)
 );
 
 CREATE TABLE s284712.E_GAME_WATCHING (
-    adult_id SERIAL NOT NULL,
-    game_instance_id SERIAL NOT NULL,
+    adult_id SERIAL,
+    game_instance_id SERIAL,
     PRIMARY KEY (adult_id,game_instance_id)
 );
 
