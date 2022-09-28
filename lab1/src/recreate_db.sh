@@ -61,4 +61,6 @@ fi
 
 psql ${psqlOpt} -a -f "${workingDir}"/sqls/destroy_database.sql >"${workingDir}"/logs/drop.log 2>"${workingDir}"/logs/errors/drop_errors.log
 psql ${psqlOpt} -a -f "${workingDir}"/sqls/create_database.sql >"${workingDir}"/logs/init.log 2>"${workingDir}"/logs/errors/init_errors.log
-psql ${psqlOpt} -a -f "${workingDir}"/sqls/insert_data.sql >"${workingDir}"/logs/insert.log 2>"${workingDir}"/logs/errors/insert_errors.log
+psql ${psqlOpt} -a -f "${workingDir}"/sqls/insert_data.sql >"${workingDir}"/logs/insert.log 2> "${workingDir}"/logs/errors/insert_errors.log
+
+grep -v -e "ERROR:  duplicate key value violates unique constraint" -e "already exists"  < "${workingDir}/logs/errors/insert_errors.log"  > "${workingDir}/logs/errors/insert_errors_without_dublicates.log"
