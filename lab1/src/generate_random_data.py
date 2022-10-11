@@ -16,7 +16,7 @@ def insertCommand(table, **kwargs):
 
 names = [
     ["John", "Ivan", "Gans", "Li","Spartak","Nikita"],
-    ["Katya", "Kate", "Nastya", "Ekaterina","Youlya","Maria"]
+    ["Anna", "Kate", "Nastya", "Ekaterina","Youlya","Maria"]
     ]
 games = [
     ("Hiding games", True),
@@ -59,14 +59,14 @@ for i in game_instances:
         won_child_id=rnd.randint(
             0, len(names[0])-1) if games[game][1] else "NULL"
     ))
-for i in range(20):
+for i in range(10):
     game = rnd.randint(0, len(games)-1)
     records["E_GAME_PARTICIPATION"].append(insertCommand(
         table="E_GAME_PARTICIPATION",
         child_id=rnd.randint(0, len(names)-1),
         game_instance_id=rnd.randint(0, len(game_instances)-1)
     ))
-for i in range(20):
+for i in range(10):
     game = rnd.randint(0, len(games))
     records["E_GAME_WATCHING"].append(insertCommand(
         table="E_GAME_WATCHING",
@@ -74,7 +74,7 @@ for i in range(20):
         game_instance_id=rnd.randint(0, len(game_instances)-1)
     ))
 
-for i in range(20):
+for i in range(10):
     records["E_FRIENDSHIP"].append(insertCommand(
         table="E_FRIENDSHIP",
         child_id=rnd.randint(0, len(names[0])-1),

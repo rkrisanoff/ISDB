@@ -6,14 +6,14 @@ CREATE TABLE s284712.E_GAME (
 CREATE TABLE s284712.E_CHILD (
     id SERIAL PRIMARY KEY, 
     name VARCHAR(50) NOT NULL,
-    age INTEGER DEFAULT 0,
+    age INTEGER DEFAULT 0 CHECK (age >= 0),
     gender BOOLEAN NOT NULL
 );
 
 CREATE TABLE s284712.E_ADULT (
     id SERIAL PRIMARY KEY, 
     name VARCHAR(50) NOT NULL,
-    age INTEGER DEFAULT 0,
+    age INTEGER DEFAULT 0 CHECK (age >= 0),
     gender BOOLEAN NOT NULL
 );
 
@@ -24,20 +24,20 @@ CREATE TABLE s284712.E_GAME_INSTANCE (
     );
 
 CREATE TABLE s284712.E_GAME_PARTICIPATION (
-    child_id SERIAL,
-    game_instance_id SERIAL,
+    child_id INTEGER NOT NULL,
+    game_instance_id INTEGER NOT NULL,
     PRIMARY KEY (child_id,game_instance_id)
 );
 
 CREATE TABLE s284712.E_GAME_WATCHING (
-    adult_id SERIAL,
-    game_instance_id SERIAL,
+    adult_id INTEGER NOT NULL,
+    game_instance_id INTEGER NOT NULL,
     PRIMARY KEY (adult_id,game_instance_id)
 );
 
 CREATE TABLE s284712.E_FRIENDSHIP (
-    child_id SERIAL,
-    adult_id SERIAL,
+    child_id INTEGER NOT NULL,
+    adult_id INTEGER NOT NULL,
     PRIMARY KEY (child_id,adult_id)
 );
 
