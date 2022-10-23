@@ -9,10 +9,15 @@ workingDir='.'
 host='pg'
 
 print_usage() {
-    printf "Usage: ..."
+    echo "Usage: analysis
+                -U user
+                -d database name
+                -h host (pg in helios)
+                -D working-dir (where logs and sqls placed)
+                -g generate new data (without args)"
 }
 
-while getopts 'U:d:D:h:' flag; do
+while getopts 'U:d:D:h:g' flag; do
     case "${flag}" in
     U)
         user_flag='true'
@@ -29,6 +34,12 @@ while getopts 'U:d:D:h:' flag; do
         host_flag='true'
         host="${OPTARG}"
         ;;
+    g)
+        generate_flag='true'
+        ;;
+    help)
+        print_usage
+        ;;
     *)
         print_usage
         exit 1
@@ -36,7 +47,9 @@ while getopts 'U:d:D:h:' flag; do
     esac
 done
 
-"${workingDir}"/src/generate_random_data.py >"${workingDir}"/sqls/insert_data.sql 2>"${workingDir}"/logs/generate_random_data_errors.log
+if [ "${generate_flag}" = 'true' ]; then
+    "${workingDir}"/src/generate_random_data.py >"${workingDir}"/sqls/insert_data.sql 2>"${workingDir}"/logs/generate_random_data_errors.log
+fi
 
 if [ -d "${workingDir}"/logs ]; then
     rm -rf "${workingDir}"/logs
@@ -61,6 +74,6 @@ fi
 
 psql ${psqlOpt} -a -f "${workingDir}"/sqls/destroy_database.sql >"${workingDir}"/logs/drop.log 2>"${workingDir}"/logs/errors/drop_errors.log
 psql ${psqlOpt} -a -f "${workingDir}"/sqls/create_database.sql >"${workingDir}"/logs/init.log 2>"${workingDir}"/logs/errors/init_errors.log
-psql ${psqlOpt} -a -f "${workingDir}"/sqls/insert_data.sql >"${workingDir}"/logs/insert.log 2> "${workingDir}"/logs/errors/insert_errors.log
+psql ${psqlOpt} -a -f "${workingDir}"/sqls/insert_data.sql >"${workingDir}"/logs/insert.log 2>"${workingDir}"/logs/errors/insert_errors.log
 
-grep -v -e "ERROR:  duplicate key value violates unique constraint" -e "already exists"  < "${workingDir}/logs/errors/insert_errors.log"  > "${workingDir}/logs/errors/insert_errors_without_dublicates.log"
+grep -v -e "ERROR:  duplicate key value violates unique constraint" -e "already exists" <"${workingDir}/logs/errors/insert_errors.log" >"${workingDir}/logs/errors/insert_errors_without_dublicates.log"
