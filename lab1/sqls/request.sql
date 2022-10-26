@@ -1,54 +1,32 @@
-SELECT name
-FROM s284712.game
-WHERE (
-        s284712.game.id in (
-            select game_id
-            from s284712.game_instance
-            WHERE s284712.game_instance.id in (
-                    select game_instance_id
-                    from s284712.GAME_PARTICIPATION
-                    where child_id in (
-                            select id as child_id
-                            from s284712.child
-                            where age = (
-                                    select min(age)
-                                    from (
-                                            select child_id,
-                                                name,
-                                                age
-                                            from (
-                                                    select id as child_id,
-                                                        name,
-                                                        age,
-                                                        count(*) as count_of_friends
-                                                    from s284712.child
-                                                        right join s284712.friendship on s284712.child.id = s284712.friendship.child_id
-                                                    group by id
-                                                    order by id
-                                                ) as child_friendship_describe
-                                            where (
-                                                    (child_friendship_describe.count_of_friends > 2)
-                                                    or (
-                                                        child_friendship_describe.count_of_friends <= 2
-                                                        and child_friendship_describe.child_id in (
-                                                            select child_id
-                                                            from s284712.friendship
-                                                            where s284712.friendship.power = 99
-                                                        )
-                                                    )
-                                                )
-                                        ) as child_conditions
-                                )
-                    )
+SELECT 
+game_instance.id as game_instance_id,
+    game.id as game_type_id,
+    game.name as game_name,
+    child.id as child_id,
+    child.name as child_name
+FROM (
+        child 
+        JOIN friendship ON child.id = friendship.child_id
+        JOIN game_participation ON friendship.child_id = game_participation.child_id
+        JOIN game_instance ON game_participation.game_instance_id = game_instance.id
+        JOIN game ON game_instance.game_id = game.id
+
+    )
+group By 
+child.id,
+    game_instance.id,
+    game.id,
+    game_participation.child_id,
+    game_participation.game_instance_id,
+    friendship.child_id,
+    friendship.adult_id
+having (
+        child.gender = 'male'
+        and (
+            (count(*) > 2)
+            or (
+                count(*) <= 2
+                and friendship.power = 99
             )
         )
-);
--- select id as child_id,
---     name,
---     age,
---     count(*) as count_of_friends,
---     max(power) as has_99_friendship_power
--- from s284712.child
---     right join s284712.friendship on s284712.child.id = s284712.friendship.child_id
--- group by id
--- order by id;
+    );
